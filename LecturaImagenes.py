@@ -42,27 +42,29 @@ def aislarFigura(color_figura, color_fondo, imagen):
                 imagen_auxiliar.putpixel(coordenada, (int(color_fondo_original[0]), int(color_fondo_original[1]), int(color_fondo_original[2])))
     return imagen_auxiliar
 
-def escalas_de_grises(self):
-        self.imagen = cv2.cvtColor(self.imagen, cv2.COLOR_BGR2GRAY)
-        self.arreglo = np.array(self.imagen)
+def escalas_de_grises(imagen):
+        imagen = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+        arreglo = np.array(imagen)
+        return imagen, arreglo
 
-def encuentra_contorno(self):
-        self.imagen = cv2.cvtColor(self.imagen, cv2.COLOR_BGR2GRAY)
-        self.imagen = cv2.Canny(self.imagen, 100, 200)
-        self.arreglo = np.array(self.imagen)
+def encuentra_contorno(imagen):
+        imagen = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+        imagen = cv2.Canny(imagen, 100, 200)
+        arreglo = np.array(imagen)
+        return imagen, arreglo
 
-def mostrar_imagen(self):
-        cv2.imshow("imagen", self.imagen)
+def mostrar_imagen(imagen):
+        cv2.imshow("imagen", imagen)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-def mostrar_imagen_grises(self):
-        cv2.imshow("imagen", self.imagen)
+def mostrar_imagen_grises(imagen):
+        cv2.imshow("imagen", imagen)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-def mostrar_imagen_contorno(self):
-        cv2.imshow("imagen", self.imagen)
+def mostrar_imagen_contorno(imagen):
+        cv2.imshow("imagen",imagen)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
