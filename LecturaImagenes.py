@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+import cv2
 
 def solicitarImagenYPasarlaAMatriz():
     print("Bienvenido a nuestro programa de detección de figuras dentro de una imagen")
@@ -41,6 +42,29 @@ def aislarFigura(color_figura, color_fondo, imagen):
                 imagen_auxiliar.putpixel(coordenada, (int(color_fondo_original[0]), int(color_fondo_original[1]), int(color_fondo_original[2])))
     return imagen_auxiliar
 
+def escalas_de_grises(self):
+        self.imagen = cv2.cvtColor(self.imagen, cv2.COLOR_BGR2GRAY)
+        self.arreglo = np.array(self.imagen)
+
+def encuentra_contorno(self):
+        self.imagen = cv2.cvtColor(self.imagen, cv2.COLOR_BGR2GRAY)
+        self.imagen = cv2.Canny(self.imagen, 100, 200)
+        self.arreglo = np.array(self.imagen)
+
+def mostrar_imagen(self):
+        cv2.imshow("imagen", self.imagen)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+def mostrar_imagen_grises(self):
+        cv2.imshow("imagen", self.imagen)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+def mostrar_imagen_contorno(self):
+        cv2.imshow("imagen", self.imagen)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
 
