@@ -45,13 +45,13 @@ def aislarFigura(color_figura, color_fondo, imagen):
 def escalas_de_grises(imagen):
         imagen = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
         arreglo = np.array(imagen)
-        return imagen, arreglo
+        return imagen
 
 def encuentra_contorno(imagen):
-        imagen = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
         imagen = cv2.Canny(imagen, 100, 200)
-        arreglo = np.array(imagen)
-        return imagen, arreglo
+        contornos = cv2.findContours(imagen,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        arregloCoordenadasContorno = np.array(contornos)
+        return arregloCoordenadasContorno
 
 def mostrar_imagen(imagen):
         cv2.imshow("imagen", imagen)
