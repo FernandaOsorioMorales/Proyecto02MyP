@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 import cv2
+import imutils
 
 def solicitarImagenYPasarlaAMatriz():
     print("Bienvenido a nuestro programa de detección de figuras dentro de una imagen")
@@ -42,16 +43,17 @@ def aislarFigura(color_figura, color_fondo, imagen):
                 imagen_auxiliar.putpixel(coordenada, (int(color_fondo_original[0]), int(color_fondo_original[1]), int(color_fondo_original[2])))
     return imagen_auxiliar
 
-def escalas_de_grises(imagen):
-        imagen = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-        arreglo = np.array(imagen)
-        return imagen
+def escalas_de_grises(imagen_path):
+    imagen = cv2.imread(imagen_path)
+    grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+    # cv2.imshow("gris", grises)
+    # cv2.waitKey(delay = 5000)
+    return grises
 
 def encuentra_contorno(imagen):
-        imagen = cv2.Canny(imagen, 100, 200)
-        contornos = cv2.findContours(imagen,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        arregloCoordenadasContorno = np.array(contornos)
-        return arregloCoordenadasContorno
+    threshold = cv2.threshold(imagen,0,255,cv2.THRESH_BINARY)[1]
+    contornos = cv2.findContours(threshold,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    return contornos
 
 def mostrar_imagen(imagen):
         cv2.imshow("imagen", imagen)
@@ -69,7 +71,7 @@ def mostrar_imagen_contorno(imagen):
         cv2.destroyAllWindows()
 
 
-
+#/home/anshar/modelado/proyecto2/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
 
 
 
