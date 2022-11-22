@@ -51,8 +51,9 @@ def escalas_de_grises(imagen_path):
     return grises
 
 def encuentra_contorno(imagen):
-    threshold = cv2.threshold(imagen,0,255,cv2.THRESH_BINARY)[1]
-    contornos = cv2.findContours(threshold,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    canny = cv2.Canny(imagen,0,50)
+    #threshold = cv2.threshold(imagen,255,255,cv2.THRESH_BINARY)[1]
+    contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     return contornos
 
 def mostrar_imagen(imagen):

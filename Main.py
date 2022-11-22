@@ -16,6 +16,7 @@ if __name__ == '__main__':
         figura_aislada.save(f"{color}.jpg")
         figura_aisladaBN = LecturaImagenes.escalas_de_grises(f"{color}.jpg")
         figuraContorneada = LecturaImagenes.encuentra_contorno(figura_aisladaBN)
+        print(figuraContorneada)
         
 
 
