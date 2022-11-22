@@ -10,13 +10,13 @@ if __name__ == '__main__':
     colores_fuente, fondo_fuente = LecturaImagenes.escaneoDeColores(imagen_fuente)
     colores_fuente = list(colores_fuente)
     for color in colores_fuente:
-        print(color)
         figura_aislada = LecturaImagenes.aislarFigura(color, fondo_fuente, imagen_fuente)
         #figura_aislada.show()
         figura_aislada.save(f"{color}.jpg")
         figura_aisladaBN = LecturaImagenes.escalas_de_grises(f"{color}.jpg")
         figuraContorneada = LecturaImagenes.encuentra_contorno(figura_aisladaBN)
-        print(figuraContorneada)
+        vertices_figura = LecturaImagenes.obtener_vertices(figuraContorneada, figura_aislada, color)
+        print(color+" : "+str(vertices_figura))
         
 
 

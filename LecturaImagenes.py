@@ -1,4 +1,5 @@
 from PIL import Image
+from math import sqrt
 import numpy as np
 import cv2
 import imutils
@@ -34,7 +35,7 @@ def aislarFigura(color_figura, color_fondo, imagen):
     for x in range(imagen_auxiliar.width):
         for y in range(imagen_auxiliar.height):
             coordenada = (x,y)
-            pixel = imagen_auxiliar.getpixel(coordenada);
+            pixel = imagen_auxiliar.getpixel(coordenada)
             rgb = ""
             for elemento in pixel:
                 rgb+=str(elemento)+","
@@ -56,21 +57,33 @@ def encuentra_contorno(imagen):
     contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     return contornos
 
-def mostrar_imagen(imagen):
-        cv2.imshow("imagen", imagen)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-def mostrar_imagen_grises(imagen):
-        cv2.imshow("imagen", imagen)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-def mostrar_imagen_contorno(imagen):
-        cv2.imshow("imagen",imagen)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
+def obtener_vertices(contornos, imagen_control, color_figura):
+    for contorno in contornos:
+        M = cv2.moments(contorno)
+        if M['m00']!=0:
+            centro_x = int(M['m10']/M['m00'])
+            centro_y = int(M['m01']/M['m00'])
+        coordenada = (centro_x,centro_y)
+        pixel = imagen_control.getpixel(coordenada)
+        rgb = ""
+        for elemento in pixel:
+            rgb+=str(elemento)+","
+        rgb = rgb.rstrip(rgb[-1])
+        vertices = 0
+        distancias_contorno = []
+        if(color_figura == rgb):
+            vertices_local = 0
+            print("ENCONTRADO!")
+            for elemento in contorno:
+                contorno_x = elemento[0][0]
+                contorno_y = elemento[0][1]
+                distancia = sqrt(pow(centro_x-contorno_x,2)+pow(centro_y-contorno_y,2))
+                distancias_contorno.append(distancia)
+            for i in range(2,len(distancias_contorno)):
+                if distancias_contorno[i-2]<distancias_contorno[i-1] and distancias_contorno[i]<distancias_contorno[i-1]:
+                    vertices_local+=1
+            vertices = max(vertices,vertices_local)
+    return vertices
 
 #/home/anshar/modelado/proyecto2/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
 
