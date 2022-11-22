@@ -60,9 +60,13 @@ def encuentra_contorno(imagen):
 def obtener_vertices(contornos, imagen_control, color_figura):
     for contorno in contornos:
         M = cv2.moments(contorno)
-        if M['m00']!=0:
-            centro_x = int(M['m10']/M['m00'])
-            centro_y = int(M['m01']/M['m00'])
+        centro_x = 0
+        centro_y = 0
+        for par in contorno:
+            centro_x+= par[0][0]
+            centro_y+= par[0][1]
+        centro_x/=len(contorno)
+        centro_y/=len(contorno)
         coordenada = (centro_x,centro_y)
         pixel = imagen_control.getpixel(coordenada)
         rgb = ""
