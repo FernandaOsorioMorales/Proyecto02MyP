@@ -4,7 +4,16 @@ import numpy as np
 import cv2
 import imutils
 
+class LecturaImagenes():
+    '''
+    Clase implementada para la lectura y procesamiento de la imagen usando la libreria opencv
+    '''
+
 def solicitarImagenYPasarlaAMatriz():
+    '''
+    Funcion que solicita la ruta de la imagen y la pasa a una matriz.
+    :return: matriz con la imagen.
+    '''
     print("Bienvenido a nuestro programa de detección de figuras dentro de una imagen")
     print("Inserte el path de su imagen incluyendo su nombre y la terminación correspondiente al tipo")
     PathImagen = input()#recibimos el path
@@ -12,6 +21,11 @@ def solicitarImagenYPasarlaAMatriz():
     return imagenGuardada
 
 def escaneoDeColores(imagen):
+    '''
+    Funcion que escanea los colores de la imagen y los guarda en un diccionario.
+    :param imagen: imagen a la que se le desea escanear los colores.
+    :return: diccionario con los colores de la imagen.
+    '''
     colores = set()
     fondo = ""
     for x in range(imagen.width):
@@ -29,6 +43,13 @@ def escaneoDeColores(imagen):
     return colores, fondo
 
 def aislarFigura(color_figura, color_fondo, imagen):
+    '''
+    Funcion que aisla la figura de la imagen, para asi obtener las diferentes figuras que se encuentren en ella.
+    :param color_figura: color de la figura que se desea aislar.
+    :param color_fondo: color del fondo de la imagen.
+    :param imagen: imagen a la que se le desea aislar la figura.
+    :return: imagen con la figura aislada.
+    '''
     imagen_auxiliar = imagen.copy()
     color_fondo_original = tuple(color_fondo.split(","))
     color_figura_original = tuple(color_figura.split(","))
@@ -57,12 +78,22 @@ def aislarFigura(color_figura, color_fondo, imagen):
     return imagen_auxiliar
 
 def transformacion_imagen_opencv(imagen_path,):
+    '''
+    Funcion que transforma la imagen a una imagen que pueda ser leida por opencv.
+    :param imagen_path: path de la imagen a transformar.
+    :return: imagen transformada.
+    '''
     imagen = cv2.imread(imagen_path)
     cv2.imshow("gris", imagen)
     cv2.waitKey(delay = 5000)
     return imagen
 
 def encuentra_contorno(imagen):
+    '''
+    Funcion que encuentra los contornos de la imagen.
+    :param imagen: imagen a la que se le desea encontrar los contornos.
+    :return: contornos encontrados.
+    '''
     #kernel = np.ones((5,5),np.float32)/25
     #imagen_blur = cv2.filter2D(imagen, -1, kernel)
     # imagen_blur = cv2.bilateralFilter(imagen,9,75,75)
@@ -74,6 +105,13 @@ def encuentra_contorno(imagen):
     return contornos
 
 def obtener_vertices(contornos, imagen_control, color_figura):
+    '''
+    Funcion que obtiene los vertices de la figura usando la implemetnacion de opencv para obtener los contornos.
+    :param contornos: contornos de la figura.
+    :param imagen_control: imagen de control.
+    :param color_figura: color de la figura.
+    :return: vertices de la figura.
+    '''
     vertices = 0
     for contorno in contornos:
         M = cv2.moments(contorno)

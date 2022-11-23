@@ -6,6 +6,9 @@ import cv2
 
 
 if __name__ == '__main__':
+    '''
+    Funcion principal del programa con la cual implementamos la lectura de la imagen y el procesamiento de la misma.
+    '''
     imagen_fuente = LecturaImagenes.solicitarImagenYPasarlaAMatriz()
     colores_fuente, fondo_fuente = LecturaImagenes.escaneoDeColores(imagen_fuente)
     colores_fuente = list(colores_fuente)
