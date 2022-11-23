@@ -2,14 +2,30 @@ from PIL import Image
 from math import sqrt
 import cv2
 
+class LecturaImagenes():
+    '''
+    Clase implementada para la lectura y procesamiento de la imagen usando la libreria opencv
+    '''
+
 def solicitarImagenYPasarlaAMatriz():
+    '''
+    Funcion que solicita la ruta de la imagen y la pasa a una matriz.
+    :return: matriz con la imagen.
+    '''
     print("Bienvenido a nuestro programa de detección de figuras dentro de una imagen")
     print("Inserte el path de su imagen incluyendo su nombre y la terminación correspondiente al tipo")
     PathImagen = input()#recibimos el path
     imagenGuardada = Image.open(PathImagen)
     return imagenGuardada
-
+    
 def aislarFigura(color_figura, color_fondo, imagen):
+    '''
+    Funcion que aisla la figura de la imagen, para asi obtener las diferentes figuras que se encuentren en ella.
+    :param color_figura: color de la figura que se desea aislar.
+    :param color_fondo: color del fondo de la imagen.
+    :param imagen: imagen a la que se le desea aislar la figura.
+    :return: imagen con la figura aislada.
+    '''
     imagen_auxiliar = imagen.copy()
     color_fondo_original = tuple(color_fondo.split(","))
     color_figura_original = tuple(color_figura.split(","))
@@ -38,10 +54,20 @@ def aislarFigura(color_figura, color_fondo, imagen):
     return imagen_auxiliar
 
 def transformacion_imagen_opencv(imagen_path):
+    '''
+    Funcion que transforma la imagen a una imagen que pueda ser leida por opencv.
+    :param imagen_path: path de la imagen a transformar.
+    :return: imagen transformada.
+    '''
     imagen = cv2.imread(imagen_path)
     return imagen
 
 def encuentra_contorno(imagen):
+    '''
+    Funcion que encuentra los contornos de la imagen.
+    :param imagen: imagen a la que se le desea encontrar los contornos.
+    :return: contornos encontrados.
+    '''
     imagen_blur = cv2.bilateralFilter(imagen,9,75,75)
     canny = cv2.Canny(imagen_blur, 800 , 1000)
     contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -56,6 +82,13 @@ def agrandar(imagen):
     return imagen_grande
 
 def obtener_vertices(contornos, imagen_control, color_figura):
+    '''
+    Funcion que obtiene los vertices de la figura usando la implemetnacion de opencv para obtener los contornos.
+    :param contornos: contornos de la figura.
+    :param imagen_control: imagen de control.
+    :param color_figura: color de la figura.
+    :return: vertices de la figura.
+    '''
     vertices = 0
     for contorno in contornos:
         M = cv2.moments(contorno)
