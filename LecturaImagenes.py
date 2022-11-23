@@ -1,8 +1,6 @@
 from PIL import Image
 from math import sqrt
-import numpy as np
 import cv2
-import imutils
 
 class LecturaImagenes():
     '''
@@ -19,29 +17,7 @@ def solicitarImagenYPasarlaAMatriz():
     PathImagen = input()#recibimos el path
     imagenGuardada = Image.open(PathImagen)
     return imagenGuardada
-
-def escaneoDeColores(imagen):
-    '''
-    Funcion que escanea los colores de la imagen y los guarda en un diccionario.
-    :param imagen: imagen a la que se le desea escanear los colores.
-    :return: diccionario con los colores de la imagen.
-    '''
-    colores = set()
-    fondo = ""
-    for x in range(imagen.width):
-        for y in range(imagen.height):
-            coordenada = x,y
-            pixel = imagen.getpixel(coordenada);
-            rgb = ""
-            for elemento in pixel:
-                rgb+=str(elemento)+","
-            rgb = rgb.rstrip(rgb[-1])
-            if (x==0 and y==0):
-                fondo = rgb
-            elif(rgb!=fondo):
-                colores.add(rgb)
-    return colores, fondo
-
+    
 def aislarFigura(color_figura, color_fondo, imagen):
     '''
     Funcion que aisla la figura de la imagen, para asi obtener las diferentes figuras que se encuentren en ella.
@@ -77,15 +53,13 @@ def aislarFigura(color_figura, color_fondo, imagen):
                 imagen_auxiliar.putpixel(coordenada,(255,255,255))
     return imagen_auxiliar
 
-def transformacion_imagen_opencv(imagen_path,):
+def transformacion_imagen_opencv(imagen_path):
     '''
     Funcion que transforma la imagen a una imagen que pueda ser leida por opencv.
     :param imagen_path: path de la imagen a transformar.
     :return: imagen transformada.
     '''
     imagen = cv2.imread(imagen_path)
-    cv2.imshow("gris", imagen)
-    cv2.waitKey(delay = 5000)
     return imagen
 
 def encuentra_contorno(imagen):
@@ -94,15 +68,18 @@ def encuentra_contorno(imagen):
     :param imagen: imagen a la que se le desea encontrar los contornos.
     :return: contornos encontrados.
     '''
-    #kernel = np.ones((5,5),np.float32)/25
-    #imagen_blur = cv2.filter2D(imagen, -1, kernel)
-    # imagen_blur = cv2.bilateralFilter(imagen,9,75,75)
-    # imagen_blur = cv2.GaussianBlur(imagen,(10,10),0)
-    imagen_blur = cv2.blur(imagen, (5,5),cv2.BORDER_CONSTANT)
-    canny = cv2.Canny(imagen,0,50)
-    #threshold = cv2.threshold(imagen,255,255,cv2.THRESH_BINARY)[1]
-    contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    imagen_blur = cv2.bilateralFilter(imagen,9,75,75)
+    canny = cv2.Canny(imagen_blur, 800 , 1000)
+    contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     return contornos
+
+def agrandar(imagen):
+    porcentaje_de_escala = 500
+    ancho = int(imagen.shape[1] * porcentaje_de_escala / 100)
+    largo = int(imagen.shape[0] * porcentaje_de_escala / 100)
+    dimension = (ancho, largo)
+    imagen_grande = cv2.resize(imagen, dimension, interpolation = cv2.INTER_AREA)
+    return imagen_grande
 
 def obtener_vertices(contornos, imagen_control, color_figura):
     '''
@@ -115,33 +92,50 @@ def obtener_vertices(contornos, imagen_control, color_figura):
     vertices = 0
     for contorno in contornos:
         M = cv2.moments(contorno)
-        centro_x = 0
-        centro_y = 0
-        for par in contorno:
-            centro_x+= par[0][0]
-            centro_y+= par[0][1]
-        centro_x/=len(contorno)
-        centro_y/=len(contorno)
-        coordenada = (centro_x,centro_y)
-        pixel = imagen_control.getpixel(coordenada)
-        rgb = ""
-        for elemento in pixel:
-            rgb+=str(elemento)+","
-        rgb = rgb.rstrip(rgb[-1])
-        distancias_contorno = []
-        if(rgb == "255,255,255"):
-            vertices_local = 0
-            print("ENCONTRADO!")
-            for elemento in contorno:
-                contorno_x = elemento[0][0]
-                contorno_y = elemento[0][1]
-                distancia = sqrt(((centro_x-contorno_x)*(centro_x-contorno_x))+((centro_y-contorno_y)*(centro_y-contorno_y)))
-                distancias_contorno.append(distancia)
-            for i in range(2,len(distancias_contorno)):
-                if distancias_contorno[i-2]<distancias_contorno[i-1] and distancias_contorno[i]<distancias_contorno[i-1]:
-                    vertices_local+=1
-            vertices = vertices_local
+        if M['m00']!=0:
+            centro_x = int(M['m10']/M['m00'])
+            centro_y = int(M['m01']/M['m00'])
+            coordenada = (centro_x,centro_y)
+            pixel = imagen_control.getpixel(coordenada)
+            rgb = ""
+            for elemento in pixel:
+                rgb+=str(elemento)+","
+            rgb = rgb.rstrip(rgb[-1])
+            distancias_contorno = []
+            if(rgb == "255,255,255"):
+                vertices_local = 0
+                for elemento in contorno:
+                    contorno_x = elemento[0][0]
+                    contorno_y = elemento[0][1]
+                    distancia = sqrt(((centro_x-contorno_x)*(centro_x-contorno_x))+((centro_y-contorno_y)*(centro_y-contorno_y)))
+                    distancias_contorno.append(distancia)
+                vertices = set() 
+                for i in range(120,len(distancias_contorno)*2):
+                    i = i%len(distancias_contorno)
+                    flag = False
+                    for j in range(0,120):
+                        j = j%len(distancias_contorno)
+                        if distancias_contorno[i-j]>distancias_contorno[i-60]:
+                            flag = True
+                    for j in range(120,60,-1):
+                        j = j%len(distancias_contorno)
+                        if distancias_contorno[i-j]>distancias_contorno[i-60]:
+                            flag = True
+                    if flag == False and not(i-60 in vertices):
+                        vertices_local+=1
+                        vertices.add(i-60)
+                vertices = vertices_local
     return vertices
+
+def tipo_de_figura(vertices):
+    figura = "X"
+    if(vertices == 0 or vertices >= 7):
+        figura = "O"
+    elif vertices == 3:
+        figura = "T"
+    elif vertices == 4:
+        figura = "C"
+    return figura
 
 #/home/anshar/modelado/proyecto2/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
 
