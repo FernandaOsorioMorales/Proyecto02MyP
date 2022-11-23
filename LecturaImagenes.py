@@ -4,7 +4,7 @@ import cv2
 
 class LecturaImagenes():
     '''
-    Clase implementada para la lectura y procesamiento de la imagen usando la libreria opencv
+    Clase implementada para la lectura y procesamiento de la imagen.
     '''
 
 def solicitarImagenYPasarlaAMatriz():
@@ -74,6 +74,11 @@ def encuentra_contorno(imagen):
     return contornos
 
 def agrandar(imagen):
+    '''
+    Funcion que aumenta el tamaño de nuestra imagen.
+    :param imagen: imagen a la que se le desea aumentar el tamaño.
+    :return: imagen con el nuevo tamaño.
+    '''
     porcentaje_de_escala = 500
     ancho = int(imagen.shape[1] * porcentaje_de_escala / 100)
     largo = int(imagen.shape[0] * porcentaje_de_escala / 100)
@@ -128,6 +133,11 @@ def obtener_vertices(contornos, imagen_control, color_figura):
     return vertices
 
 def tipo_de_figura(vertices):
+    '''
+    Funcion que clasifica el tipo de figura al que pertenecen de acuerdo a su número de vértices.
+    :param vertices: numero de vertices encontrados en cada figura .
+    :return: tipo de figura de la que estamos trabajando.
+    '''
     figura = "X"
     if(vertices == 0 or vertices >= 7):
         figura = "O"
@@ -137,7 +147,6 @@ def tipo_de_figura(vertices):
         figura = "C"
     return figura
 
-#/home/anshar/modelado/proyecto2/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
 
 
 
