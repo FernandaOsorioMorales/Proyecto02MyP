@@ -42,22 +42,39 @@ def aislarFigura(color_figura, color_fondo, imagen):
             rgb = rgb.rstrip(rgb[-1])
             if(rgb !=color_figura):
                 imagen_auxiliar.putpixel(coordenada, (int(color_fondo_original[0]), int(color_fondo_original[1]), int(color_fondo_original[2])))
+    for x in range(imagen_auxiliar.width):
+        for y in range(imagen_auxiliar.height):
+            coordenada = (x,y)
+            pixel = imagen_auxiliar.getpixel(coordenada)
+            rgb = ""
+            for elemento in pixel:
+                rgb+=str(elemento)+","
+            rgb = rgb.rstrip(rgb[-1])
+            if(rgb !=color_figura):
+                imagen_auxiliar.putpixel(coordenada, (0, 0, 0))
+            else:
+                imagen_auxiliar.putpixel(coordenada,(255,255,255))
     return imagen_auxiliar
 
-def escalas_de_grises(imagen_path):
+def transformacion_imagen_opencv(imagen_path,):
     imagen = cv2.imread(imagen_path)
-    grises = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-    # cv2.imshow("gris", grises)
-    # cv2.waitKey(delay = 5000)
-    return grises
+    cv2.imshow("gris", imagen)
+    cv2.waitKey(delay = 5000)
+    return imagen
 
 def encuentra_contorno(imagen):
+    #kernel = np.ones((5,5),np.float32)/25
+    #imagen_blur = cv2.filter2D(imagen, -1, kernel)
+    # imagen_blur = cv2.bilateralFilter(imagen,9,75,75)
+    # imagen_blur = cv2.GaussianBlur(imagen,(10,10),0)
+    imagen_blur = cv2.blur(imagen, (5,5),cv2.BORDER_CONSTANT)
     canny = cv2.Canny(imagen,0,50)
     #threshold = cv2.threshold(imagen,255,255,cv2.THRESH_BINARY)[1]
-    contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contornos,_ = cv2.findContours(canny,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return contornos
 
 def obtener_vertices(contornos, imagen_control, color_figura):
+    vertices = 0
     for contorno in contornos:
         M = cv2.moments(contorno)
         centro_x = 0
@@ -73,20 +90,19 @@ def obtener_vertices(contornos, imagen_control, color_figura):
         for elemento in pixel:
             rgb+=str(elemento)+","
         rgb = rgb.rstrip(rgb[-1])
-        vertices = 0
         distancias_contorno = []
-        if(color_figura == rgb):
+        if(rgb == "255,255,255"):
             vertices_local = 0
             print("ENCONTRADO!")
             for elemento in contorno:
                 contorno_x = elemento[0][0]
                 contorno_y = elemento[0][1]
-                distancia = sqrt(pow(centro_x-contorno_x,2)+pow(centro_y-contorno_y,2))
+                distancia = sqrt(((centro_x-contorno_x)*(centro_x-contorno_x))+((centro_y-contorno_y)*(centro_y-contorno_y)))
                 distancias_contorno.append(distancia)
             for i in range(2,len(distancias_contorno)):
                 if distancias_contorno[i-2]<distancias_contorno[i-1] and distancias_contorno[i]<distancias_contorno[i-1]:
                     vertices_local+=1
-            vertices = max(vertices,vertices_local)
+            vertices = vertices_local
     return vertices
 
 #/home/anshar/modelado/proyecto2/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
