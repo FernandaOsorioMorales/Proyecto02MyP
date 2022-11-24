@@ -61,14 +61,14 @@ Por ejemplo:
 ImagenesEjemplos/example_1.bmp
 ```
 ## Cómo correr las pruebas
-Antes que nada, para las pruebas se necesita la instalacion de la libreria unittest, por lo que si no lo tiene instalado debera hacerlo primero para la utilizacion de estas.
-Para correr las pruebas posicionandonos en la carpeta del proyecto y daremos el siguiente comando:
+Antes que nada, para las pruebas se necesita la instalacion de la libreria unittest, por lo que si no lo tiene instalado deberá buscar obtenerlo.
+Para correr las pruebas nos posicionamos en la carpeta del proyecto y daremos el siguiente comando:
 ```
 python3 -m unittest test_lectura.py
 ```
-enseguida tnedremos que poner el path de la imagen para prueba el cual puede ser cualquiera de las que se encuentran en la carpeta ImagenesEjemplos, por ejemplo:
+Enseguida tnedremos que poner el path de la imagen para prueba(de la misma forma que cómo si estuviéramos corriendo nuestro programa) el cual puede ser cualquiera de las que se encuentran en la carpeta ImagenesEjemplos, por ejemplo:
 ```
-/home/charly/Proyecto02MyP/ImagenesEjemplos/example_1.bmp
+ImagenesEjemplos/example_1.bmp
 ```
-multiples veces, hasta que se termine de correr el programa, muestre el resultado de las pruebas y se cierre.
+múltiples veces, hasta que se termine de correr el programa, muestre el resultado de las pruebas y se cierre.
 

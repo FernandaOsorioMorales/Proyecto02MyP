@@ -1,6 +1,7 @@
 import unittest
 import LecturaImagenes as le
 import colores as co
+
 class Test_lectura(unittest.TestCase):
 
     def test_solicitarImagenYPasarlaAMatriz(self):
@@ -47,4 +48,3 @@ class Test_lectura(unittest.TestCase):
     
 if __name__ == '__main__':
     unittest.main()
- #python3 -m unittest test_lectura.py
